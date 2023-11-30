@@ -1,36 +1,25 @@
-import fakedata from '../../components/fakeData.json'
-
-const INPUT_DATA = 'dataStorage/INPUT_DATA'
-const EDIT_DATA = 'dataStorage/EDIT_DATA'
+import { createSlice } from '@reduxjs/toolkit';
 
 const initialState = {
-    value: fakedata,
+    value: [],
 };
 
-export const insertData = (payload) => {
-    return {
-        type: INPUT_DATA,
-        payload: payload,
-    }
-}
-export const editData = (payload) => {
-    return {
-        type: EDIT_DATA,
-        payload: payload,
-    }
-}
-
-
-
-const dataProcess = (state = initialState, action) => {
-    switch (action.type) {
-        case INPUT_DATA:
-            return {value: [...state.value, action.payload]}
-        case EDIT_DATA:
+const dataProcessSlice = createSlice({
+    name: 'dataProcess',
+    initialState,
+    reducers: {
+        initialData: (state, action) => {
             return {value: action.payload}
-        default:
-            return state;
+        },
+        insertData: (state, action) => {
+            return {value: [...state.value, action.payload]}
+        },
+        editData: (state, action) => {
+            return {value: action.payload}
+        },
     }
-}
+});
 
-export default dataProcess;
+export default dataProcessSlice.reducer;
+export const {initialData, insertData, editData} = dataProcessSlice.actions;
+

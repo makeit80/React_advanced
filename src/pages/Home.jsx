@@ -1,28 +1,28 @@
 import styled from "styled-components"
-import InputForm from '../components/InputForm'
-import Letter from '../components/Letter'
-import Header from '../components/Header'
+import InputForm from "../components/Body/InputForm"
+import Letter from "../components/Body/Letter"
+import Header from "../components/Header/Header"
+import axios from 'axios';
 
 import { useDispatch, useSelector } from "react-redux"
-import { GeakoBtn, ChoizaBtn } from '../redux/modules/members'
+import { useState } from "react"
+import { initialData } from "../redux/modules/dataStorage";
+import { useEffect } from "react";
 
 
 
 function Home() {
-  const members = useSelector((state) => {
-    return state.members;
-  })
-  const dataList = useSelector((state) => {
-    return state.dataProcess
-  })
   const dispatch = useDispatch();
+  const [selectedMember, setSelectedMember] = useState('Geako');
 
-  // Q&A : useEffect를 활용해 변수의 값이 바뀔 때마다 state를 변경할 수는 없을까?
-  // 꼭 useState를 써야하는걸까?
-  // let shownMember = 'Geako'
-  // useEffect(() => {
-  //     console.log('바뀌었다!')
-  // }, [shownMember])
+  useEffect(() => {
+    const fetchData = async () => {
+      const { data } = await axios.get("http://localhost:5000/comments")
+      dispatch(initialData(data))
+    }
+    fetchData()
+  }, [])
+  const dataList = useSelector((state) => state.dataProcess)
 
   return (
     <div>
@@ -32,10 +32,10 @@ function Home() {
         <StUl>
           <StImg className='Geako' 
           src={process.env.PUBLIC_URL + '/img/geako_img.jpg'} 
-          onClick={() => { dispatch({ type: GeakoBtn }) }}></StImg>
+          onClick={() => { setSelectedMember('Geako') }}></StImg>
           <StImg className='Choiza' 
           src={process.env.PUBLIC_URL + '/img/choiza_img.png'} 
-          onClick={() => { dispatch({ type: ChoizaBtn }) }}></StImg>
+          onClick={() => { setSelectedMember('Choiza') }}></StImg>
         </StUl>
 
         {/* Input */}
@@ -45,11 +45,12 @@ function Home() {
         {
           dataList.value
             .filter(function (value) {
-              return value.writedTo === members.member;
+              return value.writedTo === selectedMember;
             })
             .map((item) => {
               return (
                   <Letter
+                  key={item.id} // TODO uuid로 변경
                   id={item.id}
                   nickname={item.nickname}
                   content={item.content}
@@ -71,6 +72,7 @@ display: flex;
 align-items: center;
 justify-content: center;
 flex-direction: column;
+
 `
 
 const StUl = styled.ul`

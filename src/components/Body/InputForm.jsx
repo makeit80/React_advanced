@@ -1,26 +1,18 @@
-import React, { useState } from 'react'
+import React, { useState, useCallback } from 'react'
 import styled from "styled-components"
 import {v4 as uuidv4} from "uuid"
-
 import { useDispatch, useSelector } from "react-redux"
-import { GeakoOption, ChoizaOption } from '../redux/modules/option';
-import { nameValue, nameReset } from '../redux/modules/nameInput';
-import { contentValue, contentReset } from '../redux/modules/contentInput';
-import { insertData } from '../redux/modules/dataStorage';
+import axios from 'axios';
+
+import { insertData } from '../../redux/modules/dataStorage';
 
 
 function Form() {
     // Basic
-    const members = useSelector((state) => {
-        return state.option;
-      })
-    const nickname = useSelector((state) => {
-        return state.nameInput
-    })
-    const content = useSelector((state) => {
-        return state.contentInput
-    })
+    const [form, setform] = useState({ member: '',nickname: '', content: '' });
+    const userData = useSelector((state) => state.userData.value);
     const dispatch = useDispatch();
+
 
     function currentDate () {
         const data = new Date();
@@ -28,37 +20,27 @@ function Form() {
         `${data.getFullYear()}년 ${data.getMonth()+1}월 ${data.getDate()}일 / ${data.getHours()}시 ${data.getMinutes()}분`
         return dateFormat;
     }
-    // Q&A : option Reducer를 건드렸는데 
-    // 왜 Home Components의 members Reducer와 연결된 Button이 동작하면 여기 콘솔이 찍히는거지?
 
-    function onChangeHandler(e) {
-        const name = e.target.name
-        const value = e.target.value
-        if (name === 'nickname') {
-            dispatch(nameValue(value))
-        } else if (name === 'content') {
-            dispatch(contentValue(value))
-        } else if (name === 'member') {
-            dispatch({ type: value})
-        }
+
+    const onChangeHandler = useCallback((e) => {
+        const { name, value } = e.target;
+        console.log('e.target ===> ',e.target.value)
+        setform({ ...form, [name]: value }
+        )
     }
+    )
+
     // TODO : 로컬스토리지 활용해서 데이터 저장하기
 
     // Form
     function vaildationCheckHandler() {
-        if (members.option === "") {
+        if (form.member === "") {
             alert('멤버를 선택해주세요.')
             return false;
-        } else if (nickname.value === "") {
-            alert('이름을 입력해주세요.')
-            return false;
-        } else if (content.value === "") {
+        } else if (form.content === "") {
             alert('내용을 입력해주세요.')
             return false;
-        } else if (nickname.value.length >= 20) {
-            alert('최대 20글자까지 작성할 수 있습니다.')
-            return false;
-        } else if (content.value.length >= 100) {
+        } else if (form.content.length >= 100) {
             alert('최대 100글자까지 작성할 수 있습니다.')
             return false;
         } else {
@@ -67,20 +49,20 @@ function Form() {
     }
 
 
-    function onClickSubmitHandler(e) {
+    const onClickSubmitHandler = async (e) => {
         e.preventDefault();
         if (vaildationCheckHandler()) {
             const List = { 
                 createdAt: currentDate(),
-                nickname: nickname.value,
+                nickname: userData.name,
                 avatar : process.env.PUBLIC_URL + '/img/human.png',
-                writedTo: members.option,
-                content: content.value,
+                writedTo: form.member,
+                content: form.content,
                 id: uuidv4(),
             }
             dispatch(insertData(List))
-            dispatch(nameReset())
-            dispatch(contentReset())
+            await axios.post("http://localhost:5000/comments", List)
+            setform({ member: '',nickname: '', content: '' })
         }
     }
 
@@ -116,21 +98,19 @@ function Form() {
             onClick={onClickToggleHandler}>{toggleNameHandler(toggle)}
             </StButton>
             <StForm className={toggleHandler(toggle)}>
+                <StSpan>닉네임</StSpan>
+                <StP>{userData.name}</StP>
                 <StSection>
                     <StLabel>멤버 </StLabel>
-                    <StSelect name='member' onChange={onChangeHandler} value={members.option}>
+                    <StSelect name='member' value={form.member} onChange={onChangeHandler}>
                         <StOption value={""}>멤버 선택</StOption>
-                        <StOption value={GeakoOption}>개코</StOption>
-                        <StOption value={ChoizaOption}>최자</StOption>
+                        <StOption value={'Geako'}>개코</StOption>
+                        <StOption value={'Choiza'}>최자</StOption>
                     </StSelect>
                 </StSection>
                 <StSection>
-                    <StLabel>닉네임</StLabel>
-                    <StInput name='nickname' value={nickname.value} onChange={onChangeHandler}></StInput>
-                </StSection>
-                <StSection>
                     <StLabel>내용</StLabel>
-                    <StInput name='content' value={content.value} onChange={onChangeHandler}></StInput>
+                    <StInput name='content' value={form.content} onChange={onChangeHandler}></StInput>
                 </StSection>
                 <StDiv>
                     <StButton 
@@ -222,5 +202,13 @@ background-color: #dcdcdc;
 box-shadow: ${(props) => props.shadow}; 
 transition: 0.5s;
 }
+`
+const StSpan = styled.span`
+    font-weight: bold;
+padding: 10px;
+`
+const StP = styled.p`
+padding: 10px;
+border-bottom: 1px solid white;
 `
 export default Form

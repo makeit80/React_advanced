@@ -4,6 +4,10 @@ import reset from "styled-reset";
 
 const GlobalStyle = createGlobalStyle`
 ${reset}
+
+body {
+overflow-x: hidden;
+}
 `
 
 

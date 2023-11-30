@@ -1,19 +1,15 @@
-import {createStore} from "redux";
-import { combineReducers } from "redux";
-import members from "../modules/members";
-import option from "../modules/option";
-import nameInput from "../modules/nameInput";
-import contentInput from "../modules/contentInput";
 import dataProcess from "../modules/dataStorage";
+import userData from "../modules/userData";
+import loginState from "../modules/loginState";
+import { configureStore } from "@reduxjs/toolkit";
 
-const rootReducer = combineReducers({
-    members,
-    option,
-    nameInput,
-    contentInput,
-    dataProcess,
+const store = configureStore({
+    reducer: {
+        dataProcess,
+        userData,
+        loginState,
+    }
 });
-const store = createStore(rootReducer);
 
 export default store;
 

@@ -1,4 +1,12 @@
-[
+{
+  "posts": [
+    {
+      "id": 1,
+      "title": "json-server",
+      "author": "typicode"
+    }
+  ],
+  "comments": [
     {
       "createdAt": "2023-11-03T02:07:09.423Z",
       "nickname": "Dr. Clint Christiansen",
@@ -39,4 +47,31 @@
       "writedTo": "Geako",
       "id": "5"
     }
+  ],
+  "user": [
+    {
+      "name": "typicodeadsasadsadasdad",
+      "profileImg": "https://www.lab2050.org/common/img/default_profile.png",
+      "id": "no2444",
+      "password": "thwn23"
+    },
+    {
+      "name": "thwnaos",
+      "profileImg": "https://www.lab2050.org/common/img/default_profile.png",
+      "id": "no2344",
+      "password": "thwnaos23"
+    },
+    {
+      "name": "typicode",
+      "profileImg": "https://www.lab2050.org/common/img/default_profile.png",
+      "id": "no2555",
+      "password": "thwn23!"
+    },
+    {
+      "name": "asd",
+      "profileImg": "https://www.lab2050.org/common/img/default_profile.png",
+      "id": "asda",
+      "password": "asdad"
+    }
   ]
+}
