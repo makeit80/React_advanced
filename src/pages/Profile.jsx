@@ -5,28 +5,49 @@ import { useParams } from 'react-router-dom'
 import { useDispatch, useSelector } from "react-redux"
 import styled from "styled-components"
 
-import { editUserName } from '../redux/modules/userData';
+import { editUserName, editUserImg } from '../redux/modules/userData';
 import axios from 'axios';
 
 function Profile() {
   const dispatch = useDispatch();
-  const userData = useSelector((state) => state.userData.value)
+  const { accessToken, avatar, nickname, success, userId } = useSelector((state) => state.userData.value)
 
   const [isEdit, setIsEdit] = useState(false);
-  const [editValue, setEditValue] = useState(userData.name);
+  const [editNameValue, setEditNameValue] = useState(nickname);
+  const [uploadedImage, setUploadedImage] = useState(avatar)
 
-  function onChangeHandler (e) {
-    setEditValue(e.target.value)
+
+  function onChangeNameHandler(e) {
+    setEditNameValue(e.target.value)
+  }
+  function onChangeImageHandler(e) {
+    const uploadImg = e.target.files[0]
+    setUploadedImage(uploadImg)
+  }
+  function imgUrlReader (uploadImg) {
+    console.log('uploadImg', uploadImg)
+    return URL.createObjectURL(uploadImg)
   }
   const onClickEditSwitchHandler = async () => {
-    return !isEdit 
-    ? setIsEdit(true) 
-    : (setIsEdit(false), 
-      dispatch(editUserName(editValue)),
-      await axios.put(`http://localhost:5000/user/${userData.id}`, {
-        ...userData, name: editValue
-      })
-      )
+    if (isEdit === true) {
+      setIsEdit(false)
+      dispatch(editUserName(editNameValue))
+      dispatch(editUserImg(uploadedImage))
+
+      const formData = new FormData();
+      formData.append("avatar", uploadedImage);
+      formData.append("nickname", editNameValue);
+
+      await axios.patch(`https://moneyfulpublicpolicy.co.kr/profile`, formData,
+        {
+          headers: {
+            "Content-Type": "multipart/form-data",
+            Authorization: `Bearer ${accessToken}`,
+          },
+        }).then((response) => console.log(response))
+    } else {
+      setIsEdit(true)
+    }
   }
 
   // TODO : 이미지 수정 기능
@@ -41,17 +62,25 @@ function Profile() {
     <StWrapperDiv>
       <StDiv>
         <StFigure>
-          <StImg src={userData.profileImg}></StImg>
+          <StImg src={uploadedImage}></StImg>
         </StFigure>
 
         <StStpan top={'55%'}>닉네임</StStpan>
-        {!isEdit 
-        ? <StP top={'55%'}>{editValue}</StP> 
-        : <StTextarea value={editValue} onChange={onChangeHandler} top={'55%'}></StTextarea>}
+        {!isEdit
+          ? <StP top={'55%'}>{editNameValue}</StP>
+          : <StTextarea value={editNameValue} onChange={onChangeNameHandler} top={'55%'}></StTextarea>}
         <StStpan top={'75%'}>아이디</StStpan>
-        <StP top={'75%'}>{userData.id}</StP>
+        <StP top={'75%'}>{userId}</StP>
         <StButton onClick={onClickEditSwitchHandler} right={'0%'}>{!isEdit ? '수정' : '수정완료'}</StButton>
-        {isEdit ? <StButton right={'20%'}>취소</StButton> : <></>}
+        {
+          isEdit ?
+            <>
+              <StButton right={'20%'}>취소</StButton>
+              <StLabel></StLabel>
+              <StInput type='file' onChange={onChangeImageHandler}></StInput>
+            </> :
+            <></>
+        }
       </StDiv>
     </StWrapperDiv>
   )
@@ -131,6 +160,12 @@ right: ${(props) => props.right};
 
 border: none;
 width: 100px;
+`
+const StLabel = styled.label`
+  
+`
+const StInput = styled.input`
+  
 `
 
 export default Profile

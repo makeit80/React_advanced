@@ -54,8 +54,8 @@ function Form() {
         if (vaildationCheckHandler()) {
             const List = { 
                 createdAt: currentDate(),
-                nickname: userData.name,
-                avatar : process.env.PUBLIC_URL + '/img/human.png',
+                nickname: userData.nickname,
+                avatar : userData.avatar,
                 writedTo: form.member,
                 content: form.content,
                 id: uuidv4(),
@@ -99,7 +99,7 @@ function Form() {
             </StButton>
             <StForm className={toggleHandler(toggle)}>
                 <StSpan>닉네임</StSpan>
-                <StP>{userData.name}</StP>
+                <StP>{userData.nickname}</StP>
                 <StSection>
                     <StLabel>멤버 </StLabel>
                     <StSelect name='member' value={form.member} onChange={onChangeHandler}>

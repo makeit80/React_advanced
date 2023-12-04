@@ -12,7 +12,7 @@ function Login() {
   const navigate = useNavigate();
   const dispatch = useDispatch();
   const [isSingUp, setIsSignUp] = useState(false);
-  const [form, setform] = useState({ name: '', id: '', password: '' });
+  const [form, setform] = useState({ nickname: '', id: '', password: ''});
 
   function onClickSignUpHandler(e) {
     e.preventDefault();
@@ -27,26 +27,32 @@ function Login() {
 
   const onClickFetchHandler = async (e) => {
     e.preventDefault();
-    const { data } = await axios.get("http://localhost:5000/user")
-    const target = data.find((item) => item.id === form.id)
-
-    !isSingUp ?
-      (target ? login(target) : alert('아이디를 확인해주세요')) :
-      (!target ? SignUp() : alert('동알힌 아이디가 존재합니다'));
+    !isSingUp ? login() : SignUp()
   };
 
-  const login = (target) => {
-    return target.password === form.password
-      ? (dispatch(insertUserData(target)),
-        dispatch(switchUserState(true)),
-        navigate('/'))
-      : alert('비밀번호를 확인해주세요')
+  const login = async () => {
+    try {
+      const response = await axios.post("https://moneyfulpublicpolicy.co.kr/login", form)
+      console.log(response)
+      dispatch(insertUserData(response.data))
+      navigate('/')
+    } catch (error) {
+      console.log(error.message)
+    }
+
+    // console.log(response.data)
+    // dispatch(insertUserData(response.data))
+    // navigate('/')
     // TODO : react-toastify 비밀번호 틀림 표시
   }
-  // TODO : 닉네임 중복 vaildation check 구현
+  // TODO : 닉네임 중복 vaildation check 구현]
+  // TODO : try catch 문으로 리팩토링
   const SignUp = async () => {
-    await axios.post("http://localhost:5000/user", form)
-    setform({ name: '', id: '', password: '' })
+    await axios.post("https://moneyfulpublicpolicy.co.kr/register", form)
+    .then((response) => console.log('response', response))
+    // TODO : then data로 Error 핸들링 
+    // Q&A : .data 짝었는데도 왜 안나옴?
+    setform({ nickname: '', id: '', password: '' })
     setIsSignUp(false);
     // TODO : react-toastify 회원가입 완료 표시
   }
@@ -59,13 +65,13 @@ function Login() {
   // 현재 쓰는 방법보다 더 가독성 좋고 깔끔하게 쓸 수 있을거 같음
   return (
     <StDiv>
-      <StForm>
+      <StForm onSubmit={onClickFetchHandler}>
         {isSingUp ?
           <StInput
-            value={form.nickName}
+            value={form.nickname}
             onChange={onChangeHandler}
             type='text'
-            name='nickName'
+            name='nickname'
             placeholder='닉네임을 입력해주세요'
             autoComplete='off'
           /> : null}
@@ -88,7 +94,6 @@ function Login() {
 
         <StButton
           type='submit'
-          onClick={onClickFetchHandler}
         >
           {isSingUp ? 'Sign Up' : 'Sign In'}
         </StButton>

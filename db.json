@@ -46,6 +46,29 @@
       "content": "Molestiae saepe reiciendis saepe natus quo occaecati. Vel vero illum quo. Ducimus maiores porro optio illum officia nam. Cum possimus aut consequatur eaque libero ad nihil pariatur officiis.",
       "writedTo": "Geako",
       "id": "5"
+    },
+    {
+      "createdAt": "2023년 12월 1일 / 20시 24분",
+      "nickname": "no2444weasd",
+      "avatar": "/img/human.png",
+      "writedTo": "Geako",
+      "content": "ㅁㄴㅇ",
+      "id": "140db0a4-a634-4e18-9207-590818cd75e9"
+    },
+    {
+      "createdAt": "2023년 12월 1일 / 21시 21분",
+      "avatar": "https://react-jwt-avatar.s3.ap-northeast-2.amazonaws.com/23-12-01/5ac4fc53-dbf5-40dd-aba6-74503c36de7e.jpg",
+      "writedTo": "Geako",
+      "content": "123",
+      "id": "43ac9f19-4b37-4c18-ba1a-a0224282e55f"
+    },
+    {
+      "createdAt": "2023년 12월 1일 / 21시 22분",
+      "nickname": "no2444asd",
+      "avatar": "https://react-jwt-avatar.s3.ap-northeast-2.amazonaws.com/23-12-01/5ac4fc53-dbf5-40dd-aba6-74503c36de7e.jpg",
+      "writedTo": "Geako",
+      "content": "123",
+      "id": "d35e4082-94ab-4097-be06-9a29f1f517ad"
     }
   ],
   "user": [

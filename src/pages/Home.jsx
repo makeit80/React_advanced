@@ -19,6 +19,7 @@ function Home() {
     const fetchData = async () => {
       const { data } = await axios.get("http://localhost:5000/comments")
       dispatch(initialData(data))
+      console.log('data', data)
     }
     fetchData()
   }, [])

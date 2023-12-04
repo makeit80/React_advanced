@@ -6,8 +6,7 @@ import { useSelector } from "react-redux"
 function Navbar() {
     const navigate = useNavigate();
     const isLogin = useSelector((state) => state.loginState.userLogin)
-    const userData = useSelector((state) => state.userData.value)
-
+    const { accessToken, avater, nickname, success, userId} = useSelector((state) => state.userData.value)
     function onClickNavigateHandler (address) {
         navigate(`${address}/`)
     }
@@ -18,12 +17,12 @@ function Navbar() {
             <StDiv>
                 <StP onClick={() => {onClickNavigateHandler('')}}>DD</StP>
                 {
-                !isLogin ? 
+                !success ? 
                 <StLoginButton onClick={() => {onClickNavigateHandler('Login')}}>로그인</StLoginButton>
                 :
                 <StButtonDiv>
                     <StLoginButton>로그아웃</StLoginButton>
-                    <StProfileButton onClick={() => {onClickNavigateHandler(`Profile/${userData.id}`)}}>프로필</StProfileButton>
+                    <StProfileButton onClick={() => {onClickNavigateHandler(`Profile/${userId}`)}}>프로필</StProfileButton>
                 </StButtonDiv>
                 }
 

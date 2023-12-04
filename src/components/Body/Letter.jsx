@@ -1,16 +1,16 @@
 import React from 'react'
 import { useState } from 'react';
+import { useSelector } from 'react-redux';
 import { useNavigate } from 'react-router-dom'
 import styled from "styled-components"
 
 function Letter({ id, nickname, content, avatar, createdAt }) {
     const navigate = useNavigate();
-
     function contentVaildationCheck(content) {
         if (content.length > 50) {
             return `${content.substring(0, 50)}...`
         } else {
-            return content
+            return content;
         }
     }
 
@@ -20,7 +20,7 @@ function Letter({ id, nickname, content, avatar, createdAt }) {
                 <StLi>
                     <StSection>
                         <StFigure>
-                            <img src={avatar}></img>
+                            <StImg src={avatar}></StImg>
                         </StFigure>
                         <StDiv>
                             <StSpan>{`${nickname}`}</StSpan>
@@ -78,6 +78,10 @@ position : absolute;
 left: 7%;
 top: 15%;
 
+`
+const StImg = styled.img`
+    width: 100%;
+    height: 100%;
 `
 const StSpan = styled.span`
 position: absolute;
